@@ -219,6 +219,20 @@ tbody tr:hover {
   background: rgba(239, 68, 68, 0.14);
 }
 
+/* Status card accents (business view) */
+.statusNormal {
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 10px 26px rgba(16, 185, 129, 0.12);
+}
+.statusBusy {
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 10px 26px rgba(245, 158, 11, 0.12);
+}
+.statusOver {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 10px 26px rgba(239, 68, 68, 0.14);
+}
+
 .healthGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

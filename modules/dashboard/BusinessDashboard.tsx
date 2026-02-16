@@ -1,31 +1,41 @@
 import type { Payload } from "./types";
 import KpiCard from "./components/KpiCard";
 import TrafficTrendMini from "./components/TrafficTrendMini";
+import InOutSplitMini from "./components/InOutSplitMini";
 import {
   getBuckets,
   getOccupancy,
   getPeakBucket,
   getTotalVisitors,
   formatHHMM,
+  formatSiteName,
 } from "./services/compute";
 
 export default function BusinessDashboard({ data }: { data: Payload }) {
   const buckets = getBuckets(data);
   const peak = getPeakBucket(buckets);
+
   const visitors = getTotalVisitors(data);
   const occupancy = getOccupancy(data);
 
-  const capacity = 20; // 先写死：课程项目足够，后续可移到 config
+  const inCount = data.aggregates.total.in;
+  const outCount = data.aggregates.total.out;
+
+  const capacity = 20; // demo value
   const utilization = Math.min(999, Math.round((occupancy / capacity) * 100));
 
   const status =
     utilization >= 90 ? "Over capacity" : utilization >= 70 ? "Busy" : "Normal";
 
+  const statusVariant =
+    status === "Normal" ? "normal" : status === "Busy" ? "busy" : "over";
+
   return (
     <>
       <section className="panel meta">
         <div>
-          <b>Location:</b> {data.siteId} · <b>Entrance:</b> {data.zone.name}
+          <b>Location:</b> {formatSiteName(data.siteId)} · <b>Entrance:</b>{" "}
+          {data.zone.name}
         </div>
         <div className="subtle">
           Period: {data.window.start} → {data.window.end}
@@ -48,12 +58,23 @@ export default function BusinessDashboard({ data }: { data: Payload }) {
           title="Status"
           value={status}
           subtitle={`${utilization}% used`}
+          variant={statusVariant as any}
         />
       </section>
 
       <section className="section">
-        <h2 className="h2">Traffic trend</h2>
-        <TrafficTrendMini buckets={buckets} />
+        <h2 className="h2">Today overview</h2>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 12,
+          }}
+        >
+          <InOutSplitMini inCount={inCount} outCount={outCount} />
+          {/* 你已有的趋势图组件也很适合管理者 */}
+          <TrafficTrendMini buckets={buckets} />
+        </div>
       </section>
     </>
   );

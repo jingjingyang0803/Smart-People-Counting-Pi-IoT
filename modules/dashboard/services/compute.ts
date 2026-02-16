@@ -39,3 +39,11 @@ export function formatUptime(sec: number): string {
   if (hrs > 0) return `${hrs}h ${mins}m`;
   return `${mins}m`;
 }
+
+export function formatSiteName(siteId: string): string {
+  const map: Record<string, string> = {
+    "tampere-campus-A": "Tampere Campus A",
+    "tampere-campus-B": "Tampere Campus B",
+  };
+  return map[siteId] ?? siteId;
+}
