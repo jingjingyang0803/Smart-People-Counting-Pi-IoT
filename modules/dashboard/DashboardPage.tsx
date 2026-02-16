@@ -8,12 +8,7 @@ type Payload = {
   sensorId: string;
   zone: {
     name: string;
-    line: {
-      id: string;
-      a: Point;
-      b: Point;
-      insideHint: string;
-    };
+    line: { id: string; a: Point; b: Point; insideHint: string };
   };
   generatedAt: string;
   window: { start: string; end: string };
@@ -70,7 +65,6 @@ export default function DashboardPage() {
       setLoading(true);
       setErr(null);
       setData(null);
-
       try {
         const res = await fetch(selected, { cache: "no-store" });
         if (!res.ok)
@@ -103,20 +97,20 @@ export default function DashboardPage() {
   }, [data, directionFilter]);
 
   return (
-    <div style={styles.page}>
-      <header style={styles.header}>
+    <div className="container">
+      <header className="topbar">
         <div>
-          <h2 style={{ margin: 0 }}>Smart People Counting Dashboard</h2>
-          <div style={{ opacity: 0.75, marginTop: 4 }}>
+          <h1 className="h1">Smart People Counting Dashboard</h1>
+          <div className="subtle">
             Mock-driven UI · Entrance IN/OUT counting
           </div>
         </div>
 
-        <div style={styles.controls}>
-          <label style={styles.label}>
+        <div className="controls">
+          <label className="label">
             Data source
             <select
-              style={styles.select}
+              className="select"
               value={selected}
               onChange={(e) => setSelected(e.target.value)}
             >
@@ -128,10 +122,10 @@ export default function DashboardPage() {
             </select>
           </label>
 
-          <label style={styles.label}>
+          <label className="label">
             Events
             <select
-              style={styles.select}
+              className="select"
               value={directionFilter}
               onChange={(e) => setDirectionFilter(e.target.value as any)}
             >
@@ -143,29 +137,28 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {loading && <p>Loading…</p>}
+      {loading && <p className="subtle">Loading…</p>}
       {err && <p style={{ color: "crimson" }}>Error: {err}</p>}
 
       {data && (
         <>
-          <section style={styles.meta}>
+          <section className="panel meta">
             <div>
               <b>Site:</b> {data.siteId} · <b>Sensor:</b> {data.sensorId} ·{" "}
               <b>Zone:</b> {data.zone.name}
             </div>
-            <div style={{ opacity: 0.75 }}>
+            <div className="subtle">
               Window: {data.window.start} → {data.window.end} · Generated:{" "}
               {data.generatedAt}
             </div>
-            <div style={{ opacity: 0.75 }}>
+            <div className="subtle">
               Line: {data.zone.line.id} · A={JSON.stringify(data.zone.line.a)}{" "}
               B={JSON.stringify(data.zone.line.b)} · Inside:{" "}
               {data.zone.line.insideHint}
             </div>
           </section>
 
-          {/* KPI cards */}
-          <section style={styles.grid}>
+          <section className="grid">
             <KpiCard title="Total IN" value={data.aggregates.total.in} />
             <KpiCard title="Total OUT" value={data.aggregates.total.out} />
             <KpiCard title="Net" value={data.aggregates.total.net} />
@@ -180,77 +173,80 @@ export default function DashboardPage() {
             />
           </section>
 
-          {/* Trend */}
-          <section style={styles.section}>
-            <h3 style={styles.h3}>Traffic trend</h3>
+          <section className="section">
+            <h2 className="h2">Traffic trend</h2>
             {buckets.length === 0 ? (
-              <p style={{ opacity: 0.75 }}>
+              <p className="subtle">
                 No byMinute/byHour buckets found in aggregates.
               </p>
             ) : (
-              <table style={styles.table}>
+              <div className="tableWrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Bucket start</th>
+                      <th>IN</th>
+                      <th>OUT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {buckets.map((b) => (
+                      <tr key={b.ts}>
+                        <td>{b.ts}</td>
+                        <td>{b.in}</td>
+                        <td>{b.out}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+
+          <section className="section">
+            <h2 className="h2">Recent crossing events</h2>
+            <div className="tableWrap">
+              <table>
                 <thead>
                   <tr>
-                    <th style={styles.th}>Bucket start</th>
-                    <th style={styles.th}>IN</th>
-                    <th style={styles.th}>OUT</th>
+                    <th>ts</th>
+                    <th>direction</th>
+                    <th>trackId</th>
+                    <th>confidence</th>
+                    <th>snapshot</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {buckets.map((b) => (
-                    <tr key={b.ts}>
-                      <td style={styles.td}>{b.ts}</td>
-                      <td style={styles.td}>{b.in}</td>
-                      <td style={styles.td}>{b.out}</td>
+                  {filteredEvents.map((e, idx) => (
+                    <tr key={`${e.ts}-${e.trackId}-${idx}`}>
+                      <td>{e.ts}</td>
+                      <td>
+                        <span
+                          className={`pill ${e.direction === "in" ? "pillIn" : "pillOut"}`}
+                        >
+                          {e.direction.toUpperCase()}
+                        </span>
+                      </td>
+                      <td>{e.trackId}</td>
+                      <td>{e.confidence.toFixed(2)}</td>
+                      <td>{e.snapshot?.path ?? "—"}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            )}
+            </div>
           </section>
 
-          {/* Events */}
-          <section style={styles.section}>
-            <h3 style={styles.h3}>Recent crossing events</h3>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>ts</th>
-                  <th style={styles.th}>direction</th>
-                  <th style={styles.th}>trackId</th>
-                  <th style={styles.th}>confidence</th>
-                  <th style={styles.th}>snapshot</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEvents.map((e, idx) => (
-                  <tr key={`${e.ts}-${e.trackId}-${idx}`}>
-                    <td style={styles.td}>{e.ts}</td>
-                    <td style={styles.td}>
-                      <span style={pill(e.direction)}>
-                        {e.direction.toUpperCase()}
-                      </span>
-                    </td>
-                    <td style={styles.td}>{e.trackId}</td>
-                    <td style={styles.td}>{e.confidence.toFixed(2)}</td>
-                    <td style={styles.td}>{e.snapshot?.path ?? "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-
-          {/* Health */}
-          <section style={styles.section}>
-            <h3 style={styles.h3}>Device health</h3>
-            <div style={styles.healthGrid}>
-              <HealthItem label="Last frame" value={data.health.lastFrameTs} />
-              <HealthItem label="FPS" value={data.health.fps.toFixed(1)} />
-              <HealthItem
+          <section className="section">
+            <h2 className="h2">Device health</h2>
+            <div className="healthGrid">
+              <HealthCard label="Last frame" value={data.health.lastFrameTs} />
+              <HealthCard label="FPS" value={data.health.fps.toFixed(1)} />
+              <HealthCard
                 label="CPU temp"
                 value={`${data.health.cpuTempC.toFixed(1)} °C`}
               />
-              <HealthItem
+              <HealthCard
                 label="Uptime"
                 value={formatUptime(data.health.uptimeSec)}
               />
@@ -268,116 +264,21 @@ function KpiCard(props: {
   subtitle?: string;
 }) {
   return (
-    <div style={styles.card}>
-      <div style={{ opacity: 0.7, fontSize: 13 }}>{props.title}</div>
-      <div style={{ fontSize: 28, fontWeight: 700, marginTop: 6 }}>
+    <div className="panel card">
+      <div className="cardTitle">{props.title}</div>
+      <div className="cardValue">{props.value}</div>
+      {props.subtitle ? <div className="cardSub">{props.subtitle}</div> : null}
+    </div>
+  );
+}
+
+function HealthCard(props: { label: string; value: string }) {
+  return (
+    <div className="panel card">
+      <div className="cardTitle">{props.label}</div>
+      <div style={{ marginTop: 10, fontWeight: 800, fontSize: 18 }}>
         {props.value}
       </div>
-      {props.subtitle ? (
-        <div style={{ opacity: 0.7, fontSize: 12, marginTop: 6 }}>
-          {props.subtitle}
-        </div>
-      ) : null}
     </div>
   );
-}
-
-function HealthItem(props: { label: string; value: string }) {
-  return (
-    <div style={styles.healthItem}>
-      <div style={{ opacity: 0.7, fontSize: 13 }}>{props.label}</div>
-      <div style={{ marginTop: 6, fontWeight: 600 }}>{props.value}</div>
-    </div>
-  );
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  page: {
-    padding: 18,
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto",
-    maxWidth: 1100,
-    margin: "0 auto",
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: 16,
-    marginBottom: 12,
-  },
-  controls: {
-    display: "flex",
-    gap: 12,
-    alignItems: "flex-end",
-    flexWrap: "wrap",
-  },
-  label: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 6,
-    fontSize: 13,
-    opacity: 0.85,
-  },
-  select: {
-    padding: "8px 10px",
-    borderRadius: 10,
-    border: "1px solid #ddd",
-    minWidth: 180,
-  },
-  meta: {
-    padding: 12,
-    border: "1px solid #eee",
-    borderRadius: 14,
-    marginBottom: 12,
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-    gap: 12,
-    marginBottom: 12,
-  },
-  card: {
-    border: "1px solid #eee",
-    borderRadius: 14,
-    padding: 14,
-    boxShadow: "0 1px 0 rgba(0,0,0,0.02)",
-  },
-  section: { marginTop: 14 },
-  h3: { margin: "8px 0 10px 0" },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    border: "1px solid #eee",
-    borderRadius: 12,
-    overflow: "hidden",
-  },
-  th: {
-    textAlign: "left",
-    padding: "10px 10px",
-    borderBottom: "1px solid #eee",
-    fontSize: 13,
-    opacity: 0.8,
-  },
-  td: {
-    padding: "10px 10px",
-    borderBottom: "1px solid #f2f2f2",
-    verticalAlign: "top",
-  },
-  healthGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-    gap: 12,
-  },
-  healthItem: { border: "1px solid #eee", borderRadius: 14, padding: 14 },
-};
-
-function pill(direction: "in" | "out"): React.CSSProperties {
-  return {
-    display: "inline-block",
-    padding: "4px 10px",
-    borderRadius: 999,
-    border: "1px solid #ddd",
-    fontSize: 12,
-    fontWeight: 700,
-  };
 }
