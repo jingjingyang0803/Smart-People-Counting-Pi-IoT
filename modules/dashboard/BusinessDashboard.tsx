@@ -10,6 +10,7 @@ import {
   formatHHMM,
   formatSiteName,
 } from "./services/compute";
+import { SITE_DISPLAY_NAME, ZONE_CONFIG } from "./config";
 
 export default function BusinessDashboard({ data }: { data: Payload }) {
   const buckets = getBuckets(data);
@@ -21,11 +22,24 @@ export default function BusinessDashboard({ data }: { data: Payload }) {
   const inCount = data.aggregates.total.in;
   const outCount = data.aggregates.total.out;
 
-  const capacity = 20; // demo value
+  const siteName = SITE_DISPLAY_NAME[data.siteId] ?? data.siteId;
+  const zoneKey = `${data.siteId}::${data.zone.name}`.toLowerCase();
+
+  const cfg = ZONE_CONFIG[zoneKey] ?? {
+    capacity: 20,
+    busyPct: 70,
+    overPct: 90,
+  };
+
+  const capacity = cfg.capacity;
   const utilization = Math.min(999, Math.round((occupancy / capacity) * 100));
 
   const status =
-    utilization >= 90 ? "Over capacity" : utilization >= 70 ? "Busy" : "Normal";
+    utilization >= cfg.overPct
+      ? "Over capacity"
+      : utilization >= cfg.busyPct
+        ? "Busy"
+        : "Normal";
 
   const statusVariant =
     status === "Normal" ? "normal" : status === "Busy" ? "busy" : "over";
@@ -34,8 +48,7 @@ export default function BusinessDashboard({ data }: { data: Payload }) {
     <>
       <section className="panel meta">
         <div>
-          <b>Location:</b> {formatSiteName(data.siteId)} · <b>Entrance:</b>{" "}
-          {data.zone.name}
+          <b>Location:</b> {siteName} · <b>Entrance:</b> {data.zone.name}
         </div>
         <div className="subtle">
           Period: {data.window.start} → {data.window.end}
@@ -72,7 +85,7 @@ export default function BusinessDashboard({ data }: { data: Payload }) {
           }}
         >
           <InOutSplitMini inCount={inCount} outCount={outCount} />
-          {/* 你已有的趋势图组件也很适合管理者 */}
+
           <TrafficTrendMini buckets={buckets} />
         </div>
       </section>

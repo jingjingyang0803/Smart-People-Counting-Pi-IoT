@@ -3,7 +3,7 @@
   "siteId": "tampere-campus-A",
   "sensorId": "pi-cam-entrance-01",
   "zone": {
-    "name": "Main Entrance",
+    "name": "Side Entrance",
     "line": {
       "id": "door_line_1",
       "a": [120, 300],
