@@ -1,73 +1,134 @@
-# React + TypeScript + Vite
+# Smart People Counting (Raspberry Pi + Camera)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 1. Project Overview
 
-Currently, two official plugins are available:
+**Smart People Counting** is a low-cost edge-based prototype designed to detect and count people crossing an entrance line.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The system generates:
 
-## React Compiler
+- Real-time **IN / OUT** crossing events
+- Aggregated traffic statistics
+- Dashboard-ready structured JSON payloads
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This project follows a **data-first architecture**:
 
-## Expanding the ESLint configuration
+1. Define JSON schema
+2. Create mock data
+3. Build a dashboard module that consumes structured data
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The goal is to simulate an entrance monitoring system that can later be deployed on Raspberry Pi with a camera module.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 2. System Architecture
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+The system consists of three logical layers:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Edge Layer (Conceptual)
+
+- Raspberry Pi + Camera
+- Line-crossing detection
+- Event generation (IN / OUT)
+
+### Data Layer
+
+- JSON schema definition
+- Mock payload generation
+- Structured event format
+
+### Dashboard Layer (Vite + Frontend)
+
+- Reads JSON mock data
+- Visualizes metrics:
+  - IN count
+  - OUT count
+  - Net occupancy
+  - Traffic trends
+
+## 3. Repository Structure
+
+```
+docs/                      # Documentation
+│   data_schema.md         # JSON schema definition
+│
+data/                      # Mock data and snapshots
+│   README.md              # Data explanation
+│
+├── mock/                  # Example JSON payloads
+│   sample_1.json
+│   sample_2.json
+│
+└── evidence/              # Optional event snapshots
+│
+modules/
+└── dashboard/             # Vite-based dashboard UI
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 4. Data Schema
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The schema is designed for an **entrance line-crossing counting scenario**.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Each event includes:
+
+- `event_id`
+- `timestamp`
+- `direction` (IN / OUT)
+- `camera_id`
+- `confidence_score`
+
+See:
+
 ```
+docs/data_schema.md
+```
+
+## 5. Quick Start (Dashboard – Vite)
+
+### Step 1: Navigate to dashboard module
+
+```
+cd modules/dashboard
+```
+
+### Step 2: Install dependencies
+
+```
+npm install
+```
+
+### Step 3: Start development server
+
+```
+npm run dev
+```
+
+### Step 4: Open in browser
+
+Vite will show something like:
+
+```
+Local: http://localhost:5173/
+```
+
+Open the provided local URL in your browser.
+
+The dashboard reads JSON mock data from:
+
+```
+data/mock/
+```
+
+## 6. Development Notes
+
+- This dashboard is built using **Vite**
+- Data is currently static (mock JSON)
+- Designed for easy future replacement with:
+  - WebSocket stream
+  - REST API
+  - Real-time edge data feed
+
+## 7. Future Work
+
+- Integrate real OpenCV line-crossing detection
+- Deploy on Raspberry Pi
+- Add real-time streaming support
+- Add occupancy alerting
+- Add hourly/daily aggregation view
