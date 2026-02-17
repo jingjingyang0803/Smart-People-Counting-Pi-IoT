@@ -3,7 +3,7 @@
   "siteId": "tampere-campus-A",
   "sensorId": "pi-cam-entrance-01",
   "zone": {
-    "name": "Main Entrance",
+    "name": "Side Entrance",
     "line": {
       "id": "door_line_1",
       "a": [120, 300],
@@ -33,9 +33,9 @@
     }
   ],
   "aggregates": {
-    "total": { "in": 19, "out": 0, "net": 19 },
+    "total": { "in": 19, "out": 1, "net": 18 },
     "byMinute": [{ "ts": "2026-02-17T12:05:00+02:00", "in": 2, "out": 0 }],
-    "occupancyEstimate": { "current": 19, "method": "net_count" }
+    "occupancyEstimate": { "current": 18, "method": "net_count" }
   },
   "health": {
     "lastFrameTs": "2026-02-17T12:59:52+02:00",
