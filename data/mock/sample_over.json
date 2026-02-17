@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0",
+  "siteId": "tampere-campus-A",
+  "sensorId": "pi-cam-entrance-01",
+  "zone": {
+    "name": "Main Entrance",
+    "line": {
+      "id": "door_line_1",
+      "a": [120, 300],
+      "b": [520, 300],
+      "insideHint": "y < 300"
+    }
+  },
+  "generatedAt": "2026-02-17T13:00:00+02:00",
+  "window": {
+    "start": "2026-02-17T12:00:00+02:00",
+    "end": "2026-02-17T13:00:00+02:00"
+  },
+  "events": [
+    {
+      "type": "crossing",
+      "ts": "2026-02-17T12:05:11+02:00",
+      "direction": "in",
+      "trackId": "t_201",
+      "confidence": 0.85
+    },
+    {
+      "type": "crossing",
+      "ts": "2026-02-17T12:05:12+02:00",
+      "direction": "in",
+      "trackId": "t_202",
+      "confidence": 0.83
+    }
+  ],
+  "aggregates": {
+    "total": { "in": 19, "out": 0, "net": 19 },
+    "byMinute": [{ "ts": "2026-02-17T12:05:00+02:00", "in": 2, "out": 0 }],
+    "occupancyEstimate": { "current": 19, "method": "net_count" }
+  },
+  "health": {
+    "lastFrameTs": "2026-02-17T12:59:52+02:00",
+    "fps": 7.4,
+    "cpuTempC": 67.8,
+    "uptimeSec": 52000
+  }
+}

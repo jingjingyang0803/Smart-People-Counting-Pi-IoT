@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "siteId": "tampere-campus-A",
+  "sensorId": "pi-cam-entrance-01",
+  "zone": {
+    "name": "Side Entrance",
+    "line": {
+      "id": "door_line_1",
+      "a": [120, 300],
+      "b": [520, 300],
+      "insideHint": "y < 300"
+    }
+  },
+  "generatedAt": "2026-02-17T12:00:00+02:00",
+  "window": {
+    "start": "2026-02-17T11:00:00+02:00",
+    "end": "2026-02-17T12:00:00+02:00"
+  },
+  "events": [
+    {
+      "type": "crossing",
+      "ts": "2026-02-17T11:02:10+02:00",
+      "direction": "in",
+      "trackId": "t_101",
+      "confidence": 0.9
+    },
+    {
+      "type": "crossing",
+      "ts": "2026-02-17T11:02:11+02:00",
+      "direction": "in",
+      "trackId": "t_102",
+      "confidence": 0.88
+    },
+    {
+      "type": "crossing",
+      "ts": "2026-02-17T11:03:40+02:00",
+      "direction": "in",
+      "trackId": "t_103",
+      "confidence": 0.86
+    }
+  ],
+  "aggregates": {
+    "total": { "in": 14, "out": 0, "net": 14 },
+    "byMinute": [
+      { "ts": "2026-02-17T11:02:00+02:00", "in": 2, "out": 0 },
+      { "ts": "2026-02-17T11:03:00+02:00", "in": 1, "out": 0 }
+    ],
+    "occupancyEstimate": { "current": 14, "method": "net_count" }
+  },
+  "health": {
+    "lastFrameTs": "2026-02-17T11:59:58+02:00",
+    "fps": 8.0,
+    "cpuTempC": 62.1,
+    "uptimeSec": 50000
+  }
+}
