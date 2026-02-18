@@ -18,19 +18,22 @@ Frame data from camera module.
 
 ## Example Usage
 
-Import detect_motion() and update_count() into main pipeline.
+Import `detect_motion()` and `update_count()` into main pipeline.
 
 ## Output Format
 
 Data must follow shared schema:
-../shared/data_schema_example.json
+`../shared/data_schema_example.json`
 
 Example:
+
+```json
 {
-"people_in": 3,
-"people_out": 1,
-"occupancy": 12
+  "people_in": 3,
+  "people_out": 1,
+  "occupancy": 12
 }
+```
 
 ## Future Extension
 
