@@ -2,7 +2,7 @@
 
 ## System Overview
 
-Camera → Processing → MQTT → Dashboard
+Camera → Processing → Communication → Storage → Analytics → Dashboard
 
 ## Modules
 
