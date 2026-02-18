@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-02-18T14:25:12Z",
+  "device_id": "pi-01",
+  "zone": "main_entrance",
+  "people_in": 3,
+  "people_out": 1,
+  "occupancy": 12,
+  "fps": 14.8,
+  "cpu": 55.2
+}

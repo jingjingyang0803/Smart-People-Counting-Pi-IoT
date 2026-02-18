@@ -1,134 +1,36 @@
-# Smart People Counting (Raspberry Pi + Camera)
+# People Counting System (IoT Project)
 
-## 1. Project Overview
+## System Overview
 
-**Smart People Counting** is a low-cost edge-based prototype designed to detect and count people crossing an entrance line.
+Camera → Processing → MQTT → Dashboard
 
-The system generates:
+## Modules
 
-- Real-time **IN / OUT** crossing events
-- Aggregated traffic statistics
-- Dashboard-ready structured JSON payloads
+### Camera
 
-This project follows a **data-first architecture**:
+Handles video capture and performance measurement.
 
-1. Define JSON schema
-2. Create mock data
-3. Build a dashboard module that consumes structured data
+### Processing
 
-The goal is to simulate an entrance monitoring system that can later be deployed on Raspberry Pi with a camera module.
+Detects motion and updates people count.
 
-## 2. System Architecture
+### Communication
 
-The system consists of three logical layers:
+Publishes structured data via MQTT.
 
-### Edge Layer (Conceptual)
+### Dashboard
 
-- Raspberry Pi + Camera
-- Line-crossing detection
-- Event generation (IN / OUT)
+Visualizes real-time data (built using Vite).
 
-### Data Layer
+## Data Flow
 
-- JSON schema definition
-- Mock payload generation
-- Structured event format
+1. Camera captures frame
+2. Processing detects motion / updates count
+3. Communication publishes JSON
+4. Dashboard subscribes and displays data
 
-### Dashboard Layer (Vite + Frontend)
+## Team Development Strategy
 
-- Reads JSON mock data
-- Visualizes metrics:
-  - IN count
-  - OUT count
-  - Net occupancy
-  - Traffic trends
-
-## 3. Repository Structure
-
-```
-docs/                      # Documentation
-│   data_schema.md         # JSON schema definition
-│
-data/                      # Mock data and snapshots
-│   README.md              # Data explanation
-│
-├── mock/                  # Example JSON payloads
-│   sample_1.json
-│   sample_2.json
-│
-└── evidence/              # Optional event snapshots
-│
-modules/
-└── dashboard/             # Vite-based dashboard UI
-```
-
-## 4. Data Schema
-
-The schema is designed for an **entrance line-crossing counting scenario**.
-
-Each event includes:
-
-- `event_id`
-- `timestamp`
-- `direction` (IN / OUT)
-- `camera_id`
-- `confidence_score`
-
-See:
-
-```
-docs/data_schema.md
-```
-
-## 5. Quick Start (Dashboard – Vite)
-
-### Step 1: Navigate to dashboard module
-
-```
-cd modules/dashboard
-```
-
-### Step 2: Install dependencies
-
-```
-npm install
-```
-
-### Step 3: Start development server
-
-```
-npm run dev
-```
-
-### Step 4: Open in browser
-
-Vite will show something like:
-
-```
-Local: http://localhost:5173/
-```
-
-Open the provided local URL in your browser.
-
-The dashboard reads JSON mock data from:
-
-```
-data/mock/
-```
-
-## 6. Development Notes
-
-- This dashboard is built using **Vite**
-- Data is currently static (mock JSON)
-- Designed for easy future replacement with:
-  - WebSocket stream
-  - REST API
-  - Real-time edge data feed
-
-## 7. Future Work
-
-- Integrate real OpenCV line-crossing detection
-- Deploy on Raspberry Pi
-- Add real-time streaming support
-- Add occupancy alerting
-- Add hourly/daily aggregation view
+- All members work in parallel
+- Unified JSON schema defined in shared/
+- Integration phase after two weeks
