@@ -10,6 +10,7 @@
 ## Difference from Processing
 
 Processing = real-time edge detection
+
 Analytics = post-processing and statistical analysis
 
 ## Example Metrics
