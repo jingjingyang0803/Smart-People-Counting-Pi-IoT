@@ -13,7 +13,7 @@
 - **Board:** Raspberry Pi 3B+
 - **Camera:** Raspberry Pi Camera v2 (8MP, Sony IMX219)
 - **Interface:** CSI (Camera Serial Interface)
-- **OS:** Raspberry Pi OS (64-bit recommended)
+- **OS:** Raspberry Pi OS (64-bit installed)
 
 The Raspberry Pi 3B+ has:
 
@@ -35,7 +35,7 @@ This configuration was selected based on the following considerations:
 
 ### 1️⃣ Real-Time Responsiveness
 
-People counting relies on motion continuity and ROI crossing detection.
+People counting relies on motion continuity and ROI(Region of Interest) crossing detection.
 
 Higher FPS (30) improves:
 
