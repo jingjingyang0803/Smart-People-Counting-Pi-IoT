@@ -8,7 +8,7 @@ All modules MUST follow this structure.
 
 ## File
 
-data_schema_example.json
+`data_schema_example.json`
 
 ## Why This Matters
 
