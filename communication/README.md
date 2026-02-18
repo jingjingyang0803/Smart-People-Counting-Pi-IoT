@@ -10,37 +10,41 @@
 ## MQTT Broker
 
 Default:
-localhost
+`localhost`
 
 ## MQTT Topic
 
-people_counting/data
+`people_counting/data`
 
 ## How to Run
 
 Ensure MQTT broker is running.
 
 Install:
-pip install paho-mqtt
 
-Then import publish() function.
+```bash
+pip install paho-mqtt
+```
+
+Then import `publish()` function.
 
 ## Payload Schema
 
-Defined in:
-../shared/data_schema_example.json
+Defined in: `../shared/data_schema_example.json`
 
 All published messages must match this schema.
 
 ## Example Message
 
+```json
 {
-"timestamp": "...",
-"device_id": "pi-01",
-"zone": "main_entrance",
-"people_in": 3,
-"people_out": 1,
-"occupancy": 12,
-"fps": 14.8,
-"cpu": 55.2
+  "timestamp": "...",
+  "device_id": "pi-01",
+  "zone": "main_entrance",
+  "people_in": 3,
+  "people_out": 1,
+  "occupancy": 12,
+  "fps": 14.8,
+  "cpu": 55.2
 }
+```
