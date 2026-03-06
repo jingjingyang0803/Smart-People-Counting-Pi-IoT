@@ -37,7 +37,7 @@ def main(width=640, height=480, fps_target=30):
             prev_frame = frame
 
             # update counting state every frame
-            people_in, people_out, occupancy = counter.update(frame)
+            people_in, people_out, occupancy, annotated = counter.update(frame)
 
             elapsed = time.time() - start
             if elapsed >= 1.0:
