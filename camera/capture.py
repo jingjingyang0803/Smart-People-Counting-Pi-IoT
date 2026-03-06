@@ -1,24 +1,26 @@
+# camera/capture.py
 import time
-import json
 import psutil
-from datetime import datetime
 from picamera2 import Picamera2
-import paho.mqtt.client as mqtt
 
-BROKER = "localhost"          # broker runs on the Pi
-TOPIC  = "people_counting/data"
+from processing.motion_detection import detect_motion
+from processing.people_counter import PeopleCounter
+from communication.schema import build_payload
+from communication.mqtt_client import publish
 
-def main():
-    client = mqtt.Client()
-    client.connect(BROKER, 1883, 60)
-    client.loop_start()
+DEVICE_ID = "pi-01"
+ZONE = "main_entrance"
 
+def main(width=640, height=480, fps_target=30):
     picam2 = Picamera2()
     config = picam2.create_video_configuration(
-        main={"size": (640, 480), "format": "RGB888"}
+        main={"size": (width, height), "format": "RGB888"}
     )
     picam2.configure(config)
     picam2.start()
+
+    counter = PeopleCounter()
+    prev_frame = None
 
     psutil.cpu_percent(interval=None)
     start = time.time()
@@ -26,31 +28,42 @@ def main():
 
     try:
         while True:
-            _frame = picam2.capture_array()
+            frame = picam2.capture_array()
             frames += 1
 
+            motion = False
+            if prev_frame is not None:
+                motion = detect_motion(prev_frame, frame)
+            prev_frame = frame
+
+            # update counting state every frame
+            people_in, people_out, occupancy = counter.update(motion)
+
             elapsed = time.time() - start
-            if elapsed >= 1:
+            if elapsed >= 1.0:
                 fps = frames / elapsed
                 cpu = psutil.cpu_percent(interval=None)
 
-                data = {
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "device_id": "pi-01",
-                    "zone": "main_entrance",
-                    "fps": round(fps, 2),
-                    "cpu": cpu
-                }
+                payload = build_payload(
+                    device_id=DEVICE_ID,
+                    zone=ZONE,
+                    people_in=people_in,
+                    people_out=people_out,
+                    occupancy=occupancy,
+                    fps=round(fps, 2),
+                    cpu=cpu
+                )
 
-                payload = json.dumps(data)
-                print(payload)
-                client.publish(TOPIC, payload)
+                print(payload)   # for debugging
+                publish(payload) # MQTT publish
 
                 start = time.time()
                 frames = 0
+
+    except KeyboardInterrupt:
+        pass
     finally:
-        client.loop_stop()
-        client.disconnect()
+        picam2.stop()
 
 if __name__ == "__main__":
     main()
