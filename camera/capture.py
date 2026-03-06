@@ -19,7 +19,7 @@ def main(width=640, height=480, fps_target=30):
     picam2.configure(config)
     picam2.start()
 
-    counter = PeopleCounter()
+    counter = PeopleCounter(frame_height=480)
     prev_frame = None
 
     psutil.cpu_percent(interval=None)
@@ -37,7 +37,7 @@ def main(width=640, height=480, fps_target=30):
             prev_frame = frame
 
             # update counting state every frame
-            people_in, people_out, occupancy = counter.update(motion)
+            people_in, people_out, occupancy = counter.update(frame)
 
             elapsed = time.time() - start
             if elapsed >= 1.0:
