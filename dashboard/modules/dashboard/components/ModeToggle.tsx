@@ -11,11 +11,20 @@ export default function ModeToggle({
     <div style={{ display: "flex", gap: 8 }}>
       <button
         className="select"
+        onClick={() => setMode("live")}
+        style={{ opacity: mode === "live" ? 1 : 0.7 }}
+      >
+        Live
+      </button>
+
+      <button
+        className="select"
         onClick={() => setMode("business")}
         style={{ opacity: mode === "business" ? 1 : 0.7 }}
       >
         Business
       </button>
+
       <button
         className="select"
         onClick={() => setMode("technical")}

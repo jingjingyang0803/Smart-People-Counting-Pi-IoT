@@ -36,4 +36,33 @@ export type Payload = {
   };
 };
 
-export type Mode = "business" | "technical";
+/** MQTT raw realtime message */
+export type LiveTelemetryMessage = {
+  timestamp: string;
+  device_id: string;
+  zone: string;
+  people_in: number;
+  people_out: number;
+  occupancy: number;
+  fps?: number;
+  cpu?: number;
+  motion_score?: number;
+  brightness?: number;
+};
+
+/** frontend-friendly live state */
+export type LiveDashboardState = {
+  timestamp: string;
+  deviceId: string;
+  zoneName: string;
+  peopleIn: number;
+  peopleOut: number;
+  occupancy: number;
+  fps: number | null;
+  cpu: number | null;
+  motionScore: number | null;
+  brightness: number | null;
+  occupancyMismatch: boolean;
+};
+
+export type Mode = "live" | "business" | "technical";
