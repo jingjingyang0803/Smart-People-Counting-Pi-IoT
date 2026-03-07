@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# virtual env
+venv/
+
+# logs
+storage/logs/
+storage/raw/
+storage/daily/
+
+# OS
+.DS_Store
+
+# local config
+config/device.json

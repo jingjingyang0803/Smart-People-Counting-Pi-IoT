@@ -1,0 +1,14 @@
+{
+  "device_id": "pi-01",
+  "zone": "main_entrance",
+
+  "mqtt": {
+    "host": "localhost",
+    "port": 1883,
+    "topic": "people_counting/data"
+  },
+
+  "publish": {
+    "interval_sec": 1
+  }
+}
