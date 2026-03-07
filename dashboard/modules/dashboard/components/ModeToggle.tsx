@@ -11,10 +11,10 @@ export default function ModeToggle({
     <div style={{ display: "flex", gap: 8 }}>
       <button
         className="select"
-        onClick={() => setMode("live")}
-        style={{ opacity: mode === "live" ? 1 : 0.7 }}
+        onClick={() => setMode("technical")}
+        style={{ opacity: mode === "technical" ? 1 : 0.7 }}
       >
-        Live
+        Technical
       </button>
 
       <button
@@ -27,10 +27,10 @@ export default function ModeToggle({
 
       <button
         className="select"
-        onClick={() => setMode("technical")}
-        style={{ opacity: mode === "technical" ? 1 : 0.7 }}
+        onClick={() => setMode("analytics")}
+        style={{ opacity: mode === "analytics" ? 1 : 0.7 }}
       >
-        Technical
+        Analytics
       </button>
     </div>
   );

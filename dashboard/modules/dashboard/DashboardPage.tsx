@@ -3,18 +3,18 @@ import type { Mode, Payload } from "./types";
 import ModeToggle from "./components/ModeToggle";
 import BusinessDashboard from "./BusinessDashboard";
 import TechnicalDashboard from "./TechnicalDashboard";
-import LiveDashboard from "./LiveDashboard";
+import AnalyticsDashboard from "./AnalyticsDashboard";
 import { MOCK_FILES, fetchPayload } from "./services/api";
 
 export default function DashboardPage() {
   const [selected, setSelected] = useState<string>(MOCK_FILES[0].path);
-  const [mode, setMode] = useState<Mode>("live");
+  const [mode, setMode] = useState<Mode>("technical");
   const [data, setData] = useState<Payload | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (mode === "live") {
+    if (mode !== "analytics") {
       setLoading(false);
       setErr(null);
       return;
@@ -49,16 +49,16 @@ export default function DashboardPage() {
         <div>
           <h1 className="h1">Smart People Counting</h1>
           <div className="subtle">
-            {mode === "live"
-              ? "Live Monitoring"
+            {mode === "technical"
+              ? "Technical Monitoring"
               : mode === "business"
-                ? "Management Overview"
-                : "Technical Monitoring"}
+                ? "Business Overview"
+                : "Analytics"}
           </div>
         </div>
 
         <div className="controls">
-          {mode !== "live" && (
+          {mode === "analytics" && (
             <label className="label">
               Data source
               <select
@@ -79,19 +79,15 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {mode === "live" && <LiveDashboard />}
+      {mode === "technical" && <TechnicalDashboard />}
+      {mode === "business" && <BusinessDashboard />}
 
-      {mode !== "live" && loading && <p className="subtle">Loading…</p>}
-      {mode !== "live" && err && (
+      {mode === "analytics" && loading && <p className="subtle">Loading…</p>}
+      {mode === "analytics" && err && (
         <p style={{ color: "crimson" }}>Error: {err}</p>
       )}
-
-      {mode === "business" && !loading && !err && data && (
-        <BusinessDashboard data={data} />
-      )}
-
-      {mode === "technical" && !loading && !err && data && (
-        <TechnicalDashboard data={data} />
+      {mode === "analytics" && !loading && !err && data && (
+        <AnalyticsDashboard data={data} />
       )}
     </div>
   );

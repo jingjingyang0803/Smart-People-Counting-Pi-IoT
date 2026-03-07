@@ -46,8 +46,11 @@ export type LiveTelemetryMessage = {
   occupancy: number;
   fps?: number;
   cpu?: number;
+  cpu_temp?: number;
   motion_score?: number;
   brightness?: number;
+  crowd_level?: "low" | "medium" | "crowded";
+  capacity?: number;
 };
 
 /** frontend-friendly live state */
@@ -60,9 +63,12 @@ export type LiveDashboardState = {
   occupancy: number;
   fps: number | null;
   cpu: number | null;
+  cpuTemp: number | null;
   motionScore: number | null;
   brightness: number | null;
+  crowdLevel: "low" | "medium" | "crowded" | null;
+  capacity: number | null;
   occupancyMismatch: boolean;
 };
 
-export type Mode = "live" | "business" | "technical";
+export type Mode = "technical" | "business" | "analytics";
