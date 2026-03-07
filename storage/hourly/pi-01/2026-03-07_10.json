@@ -1,0 +1,16 @@
+{
+  "device_id": "pi-01",
+  "zone": "main_entrance",
+  "hour_start": "2026-03-07T10:00:02+00:00",
+  "hour_end": "2026-03-07T10:59:58+00:00",
+  "samples": 7,
+  "total_in": 8,
+  "total_out": 6,
+  "net_flow": 2,
+  "peak_occupancy": 3,
+  "avg_fps": 29.09,
+  "avg_cpu": 35.1,
+  "last_people_in": 10,
+  "last_people_out": 7,
+  "last_occupancy": 3
+}
