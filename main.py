@@ -7,6 +7,8 @@ from pathlib import Path
 import paho.mqtt.client as mqtt
 import psutil
 
+from storage.jsonl_logger import JsonlLogger
+
 
 CONFIG_PATH = Path("config/device.json")
 
@@ -26,7 +28,13 @@ def create_mqtt_client(host: str, port: int) -> mqtt.Client:
     return client
 
 
-def build_message(config: dict, people_in: int, people_out: int, occupancy: int, fps: float) -> dict:
+def build_message(
+    config: dict,
+    people_in: int,
+    people_out: int,
+    occupancy: int,
+    fps: float,
+) -> dict:
     return {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "device_id": config["device_id"],
@@ -42,11 +50,16 @@ def build_message(config: dict, people_in: int, people_out: int, occupancy: int,
 def run_live(config: dict) -> None:
     mqtt_cfg = config["mqtt"]
     pub_cfg = config["publish"]
+    storage_cfg = config.get("storage", {})
 
     client = create_mqtt_client(mqtt_cfg["host"], mqtt_cfg["port"])
     topic = mqtt_cfg["topic"]
 
     interval_sec = pub_cfg.get("interval_sec", 1)
+
+    logger = None
+    if storage_cfg.get("enabled", False):
+        logger = JsonlLogger(storage_cfg.get("log_dir", "storage/logs"))
 
     # TODO: replace these mock counters with real camera + processing pipeline
     people_in = 0
@@ -61,7 +74,12 @@ def run_live(config: dict) -> None:
         last_time = now
 
         message = build_message(config, people_in, people_out, occupancy, fps)
+
         client.publish(topic, json.dumps(message))
+
+        if logger is not None:
+            logger.write(message)
+
         print(json.dumps(message, ensure_ascii=False))
 
         time.sleep(interval_sec)
