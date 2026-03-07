@@ -8,7 +8,7 @@ import { MOCK_FILES, fetchPayload } from "./services/api";
 
 export default function DashboardPage() {
   const [selected, setSelected] = useState<string>(MOCK_FILES[0].path);
-  const [mode, setMode] = useState<Mode>("business");
+  const [mode, setMode] = useState<Mode>("live");
   const [data, setData] = useState<Payload | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
