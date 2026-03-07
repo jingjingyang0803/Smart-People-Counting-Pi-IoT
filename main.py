@@ -1,13 +1,8 @@
 import argparse
 import json
-import time
-from datetime import datetime, timezone
 from pathlib import Path
 
-import paho.mqtt.client as mqtt
-import psutil
-
-from storage.jsonl_logger import JsonlLogger
+from camera.capture import start_capture
 
 
 CONFIG_PATH = Path("config/device.json")
@@ -22,67 +17,13 @@ def load_config() -> dict:
         return json.load(f)
 
 
-def create_mqtt_client(host: str, port: int) -> mqtt.Client:
-    client = mqtt.Client()
-    client.connect(host, port, 60)
-    return client
-
-
-def build_message(
-    config: dict,
-    people_in: int,
-    people_out: int,
-    occupancy: int,
-    fps: float,
-) -> dict:
-    return {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "device_id": config["device_id"],
-        "zone": config["zone"],
-        "people_in": people_in,
-        "people_out": people_out,
-        "occupancy": occupancy,
-        "fps": round(fps, 2),
-        "cpu": psutil.cpu_percent(),
-    }
-
-
 def run_live(config: dict) -> None:
-    mqtt_cfg = config["mqtt"]
-    pub_cfg = config["publish"]
-    storage_cfg = config.get("storage", {})
+    print("Smart People Counting IoT System starting...")
+    print(f"Device ID: {config['device_id']}")
+    print(f"Zone: {config['zone']}")
+    print("Launching camera capture pipeline...")
 
-    client = create_mqtt_client(mqtt_cfg["host"], mqtt_cfg["port"])
-    topic = mqtt_cfg["topic"]
-
-    interval_sec = pub_cfg.get("interval_sec", 1)
-
-    logger = None
-    if storage_cfg.get("enabled", False):
-        logger = JsonlLogger(storage_cfg.get("log_dir", "storage/logs"))
-
-    # TODO: replace these mock counters with real camera + processing pipeline
-    people_in = 0
-    people_out = 0
-    occupancy = 0
-
-    last_time = time.time()
-
-    while True:
-        now = time.time()
-        fps = 1.0 / max(now - last_time, 1e-6)
-        last_time = now
-
-        message = build_message(config, people_in, people_out, occupancy, fps)
-
-        client.publish(topic, json.dumps(message))
-
-        if logger is not None:
-            logger.write(message)
-
-        print(json.dumps(message, ensure_ascii=False))
-
-        time.sleep(interval_sec)
+    start_capture(config)
 
 
 def run_test(config: dict) -> None:
